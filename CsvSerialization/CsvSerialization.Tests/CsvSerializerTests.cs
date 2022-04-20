@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Xunit;
 
 namespace CsvSerialization.Tests
@@ -157,6 +156,10 @@ namespace CsvSerialization.Tests
             Assert.Equal($"\"{name}\",{eligible}", csv);
         }
 
+        ///////////////////////////////////////////////////////////////////////
+        //
+        // Thresholded range of values
+
         public class DecimalRange
         {
             private readonly decimal start;
@@ -184,6 +187,7 @@ namespace CsvSerialization.Tests
             private readonly DecimalRange[] ranges =
             {
                 new DecimalRange(0m, 0.5m, "<50%"),
+                // note that 50 to 60% is not in a range
                 new DecimalRange(0.6m, 1m, "60% - 100%"),
                 new DecimalRange(1m, decimal.MaxValue, ">100%")
             };
@@ -209,7 +213,7 @@ namespace CsvSerialization.Tests
                         return range.ToString();
                     }
                 }
-                return (ratio*100).ToString() + "%";
+                return (100*ratio).ToString("N0") + "%";
             }
         }
 
@@ -217,7 +221,7 @@ namespace CsvSerialization.Tests
         {
             public decimal Numerator { get; set; }
             public decimal Denominator { get; set; }
-            public CustomThresholdPercentage CustomThresholdPercentage { get; set; }
+            public CustomThresholdPercentage? CustomThresholdPercentage { get; set; }
         }
 
         [Fact]
@@ -253,8 +257,7 @@ namespace CsvSerialization.Tests
                         new CustomThresholdPercentage(numerator, denominator)
                 };
             string csv = CsvSerializer.Serialize(poco);
-            Assert.Equal($"{numerator},{denominator},\"52.00%\"", csv);
+            Assert.Equal($"{numerator},{denominator},\"52%\"", csv);
         }
-
     }
 }

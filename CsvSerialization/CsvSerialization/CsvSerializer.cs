@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace CsvSerialization
 {
@@ -42,13 +41,6 @@ namespace CsvSerialization
                 DateTime dt => Quoted(dt.ToString("yyyyMMdd")),
                 _ => Quoted(property?.ToString()),
             };
-        }
-
-        private static string RenderProperty<T>(IEnumerable<T> properties)
-        {
-            IEnumerable<string> propertyValues =
-                properties.Select(p => RenderProperty(p));
-            return CommaSeparated(propertyValues);
         }
 
         private static string CommaSeparated(IEnumerable<string?> propertyValues) =>
